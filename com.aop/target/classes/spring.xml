@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="https://www.springframework.org/schema/beans"
+	xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="https://www.springframework.org/schema/aop"
+	xsi:schemaLocation="https://www.springframework.org/schema/beans
+		https://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		https://www.springframework.org/schema/aop
+		https://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+
+	<!-- Enable AspectJ style of Spring AOP -->
+	<aop:aspectj-autoproxy />
+
+	<!-- Configure Employee Bean and initialize it -->
+	<bean name="employee" class="com.jinchen.spring.model.Employee">
+		<property name="name" value="Dummy Name"></property>
+	</bean>
+
+	<!-- Configure EmployeeService bean -->
+	<bean name="employeeService"
+		class="com.jinchen.spring.service.EmployeeService">
+		<property name="employee" ref="employee"></property>
+	</bean>
+
+	<!-- Configure Aspect Beans, without this Aspects advice wont execute -->
+	<bean name="employeeAspect" class="com.jinchen.spring.aspect.EmployeeAspect" />
+	<bean name="employeeAspectPointcut" class="com.jinchen.spring.aspect.EmployeeAspectPointcut" />
+	<bean name="employeeAspectJoinPoint" class="com.jinchen.spring.aspect.EmployeeAspectJoinPoint" />
+	<bean name="employeeAfterAspect" class="com.jinchen.spring.aspect.EmployeeAfterAspect" />
+	<bean name="employeeAroundAspect" class="com.jinchen.spring.aspect.EmployeeAroundAspect" />
+	<bean name="employeeAnnotationAspect" class="com.jinchen.spring.aspect.EmployeeAnnotationAspect" />
+	<bean name="employeeXMLConfigAspect" class="com.jinchen.spring.aspect.EmployeeXMLConfigAspect" />
+
+	<!-- Spring AOP XML Configuration -->
+	<aop:config>
+		<aop:aspect ref="employeeXMLConfigAspect"
+			id="employeeXMLConfigAspectID" order="1">
+			<aop:pointcut
+				expression="execution(* com.jinchen.spring.model.Employee.getName())"
+				id="getNamePointcut" />
+			<aop:around method="employeeAroundAdvice"
+				pointcut-ref="getNamePointcut" arg-names="proceedingJoinPoint" />
+		</aop:aspect>
+	</aop:config>
+
+</beans>
